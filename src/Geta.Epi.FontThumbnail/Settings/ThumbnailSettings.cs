@@ -15,14 +15,8 @@ namespace Geta.Epi.FontThumbnail.Settings
         public int Character { get; set; }
         public string CustomFontName { get; set; }
         public string EmbeddedFont { get; set; }
-
-        public bool UseEmbeddedFont
-        {
-            get
-            {
-                return string.IsNullOrWhiteSpace(CustomFontName);
-            }
-        }
+        public bool UseEmbeddedFont => string.IsNullOrWhiteSpace(CustomFontName);
+        public Rotations Rotate { get; set; }
 
         public string GetFileName(string fileEnding)
         {
@@ -58,7 +52,7 @@ namespace Geta.Epi.FontThumbnail.Settings
         public override string ToString()
         {
             return string.Concat(this.EmbeddedFont, this.CustomFontName, this.Character, this.BackgroundColor, this.ForegroundColor, this.FontSize, this.Width,
-                this.Height);
+                this.Height, this.Rotate);
         }
     }
 }

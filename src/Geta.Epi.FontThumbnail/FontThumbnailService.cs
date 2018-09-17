@@ -43,7 +43,7 @@ namespace Geta.Epi.FontThumbnail
             return img;
         }
 
-        protected virtual MemoryStream GenerateImage(ThumbnailSettings settings)
+        internal virtual MemoryStream GenerateImage(ThumbnailSettings settings)
         {
 			PrivateFontCollection fonts;
             FontFamily family;
@@ -74,6 +74,17 @@ namespace Geta.Epi.FontThumbnail
 
                 g.Clear(bg);
 
+                switch (settings.Rotate)
+                {
+                    case Rotations.Rotate90:
+                    case Rotations.Rotate180:
+                    case Rotations.Rotate270:
+                        g.TranslateTransform(settings.Width / 2, settings.Height / 2);
+                        g.RotateTransform((int)settings.Rotate);
+                        g.TranslateTransform(-(settings.Width / 2), -(settings.Height / 2));
+                        break;
+                }
+
                 StringFormat format1 = new StringFormat(StringFormatFlags.NoClip);
 
                 format1.LineAlignment = StringAlignment.Center;
@@ -82,6 +93,17 @@ namespace Geta.Epi.FontThumbnail
                 Rectangle displayRectangle = new Rectangle(new Point(0, 0), new Size(settings.Width, settings.Height));
                 string chr = char.ConvertFromUtf32(settings.Character);
                 g.DrawString(chr, font, new SolidBrush(fg), displayRectangle, format1);
+                
+                switch (settings.Rotate)
+                {
+                    case Rotations.FlipHorizontal:
+                        bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                        break;
+                    case Rotations.FlipVertical:
+                        bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                        break;
+                }
+
                 bitmap.Save(stream, ImageFormat.Png);
 
 				family.Dispose();

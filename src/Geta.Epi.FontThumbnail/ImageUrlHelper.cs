@@ -7,26 +7,26 @@ using Geta.Epi.FontThumbnail.Settings;
 
 namespace Geta.Epi.FontThumbnail
 {
-    public static class ImageUrlHelper
+    internal static class ImageUrlHelper
     {
-        public static string GetUrl(FontAwesome icon, string backgroundColor = "", string foregroundColor = "", int fontSize = -1)
+        public static string GetUrl(FontAwesome icon, string backgroundColor = "", string foregroundColor = "", int fontSize = -1, Rotations rotate = Rotations.None)
         {
-            return BuildSettings("fontawesome.ttf", (int)icon, backgroundColor, foregroundColor, fontSize);
+            return BuildSettings("fontawesome.ttf", (int)icon, backgroundColor, foregroundColor, fontSize, rotate);
         }
 
-        public static string GetUrl(FontAwesome5Brands icon, string backgroundColor = "", string foregroundColor = "", int fontSize = -1)
+        public static string GetUrl(FontAwesome5Brands icon, string backgroundColor = "", string foregroundColor = "", int fontSize = -1, Rotations rotate = Rotations.None)
         {
-            return BuildSettings("fa-brands-400.ttf", (int)icon, backgroundColor, foregroundColor, fontSize);
+            return BuildSettings("fa-brands-400.ttf", (int)icon, backgroundColor, foregroundColor, fontSize, rotate);
         }
 
-        public static string GetUrl(FontAwesome5Regular icon, string backgroundColor = "", string foregroundColor = "", int fontSize = -1)
+        public static string GetUrl(FontAwesome5Regular icon, string backgroundColor = "", string foregroundColor = "", int fontSize = -1, Rotations rotate = Rotations.None)
         {
-            return BuildSettings("fa-regular-400.ttf", (int)icon, backgroundColor, foregroundColor, fontSize);
+            return BuildSettings("fa-regular-400.ttf", (int)icon, backgroundColor, foregroundColor, fontSize, rotate);
         }
 
-        public static string GetUrl(FontAwesome5Solid icon, string backgroundColor = "", string foregroundColor = "", int fontSize = -1)
+        public static string GetUrl(FontAwesome5Solid icon, string backgroundColor = "", string foregroundColor = "", int fontSize = -1, Rotations rotate = Rotations.None)
         {
-            return BuildSettings("fa-solid-900.ttf", (int)icon, backgroundColor, foregroundColor, fontSize);
+            return BuildSettings("fa-solid-900.ttf", (int)icon, backgroundColor, foregroundColor, fontSize, rotate);
         }
 
         public static string GetUrl(string customFont, int character, string backgroundColor = "",
@@ -40,11 +40,12 @@ namespace Geta.Epi.FontThumbnail
             return CompileUrl(settings);
         }
 
-        private static string BuildSettings(string embeddedFont, int icon, string backgroundColor, string foregroundColor, int fontSize)
+        private static string BuildSettings(string embeddedFont, int icon, string backgroundColor, string foregroundColor, int fontSize, Rotations rotate)
         {
             var settings = GetSettings(backgroundColor, foregroundColor, fontSize);
             settings.EmbeddedFont = embeddedFont;
             settings.Character = icon;
+            settings.Rotate = rotate;
             return CompileUrl(settings);
         }
 
