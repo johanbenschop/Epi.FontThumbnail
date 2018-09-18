@@ -19,10 +19,9 @@ namespace Geta.Epi.FontThumbnail.EnumGenerator
                 latestRelease.TagName,
                 latestRelease.Name);
 
-            //var response = await gitHubClient.Connection.Get<object>(new Uri(latestRelease.ZipballUrl), new Dictionary<string, string>(), "application/octet-stream");
             var response = await gitHubClient.Connection.Get<object>(new Uri(latestRelease.ZipballUrl), TimeSpan.FromMinutes(1));
             var bytes = response.HttpResponse.Body as byte[];
-            //var bytes = Encoding.ASCII.GetBytes(response.HttpResponse.Body.ToString());
+
             return new MemoryStream(bytes);
         }
     }

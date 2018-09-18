@@ -1,98 +1,82 @@
-﻿using Geta.Epi.FontThumbnail.EnumGenerator.Models;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using Geta.Epi.FontThumbnail.EnumGenerator.Models;
+using Newtonsoft.Json;
 
 namespace Geta.Epi.FontThumbnail.EnumGenerator
 {
     internal static class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            string sourcePath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
+            var sourcePath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Font Awesome Enum Generator");
             Console.WriteLine("{0}", sourcePath);
-            string enumBasePath = $@"{sourcePath}\Geta.Epi.FontThumbnail";
+            var enumBasePath = $@"{sourcePath}\Geta.Epi.FontThumbnail";
             Console.WriteLine("\nOutput directory: {0}", enumBasePath);
-            
+
             var fontAwesomeZipStream = await GithubDownloader.DownloadLatestReleaseAsync("FortAwesome", "Font-Awesome");
 
             using (var archive = new ZipArchive(fontAwesomeZipStream))
             {
-                var metaData = archive.GetEntry("metadata/icons.json");
+                var rootEntry = archive.Entries[0];
+                var metaDataEntry = archive.GetEntry(rootEntry + "advanced-options/metadata/icons.json");
 
-
-                foreach (var entry in archive.Entries)
+                if (metaDataEntry == null)
                 {
-                    var stream = entry.Open();
-                    
+                    Console.WriteLine("\nArchive does not contain a metadata directory with a icons.json file.");
                 }
+
+                Console.WriteLine("\nLoading metadata from: {0}", metaDataEntry);
+                var metadata = LoadMetadata(metaDataEntry.Open());
+
+                // Get a list all the different styles
+                var styles = metadata.SelectMany(x => x.Styles).Distinct();
+
+                foreach (var item in styles)
+                {
+                    var styleName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item);
+                    var enumName = $"FontAwesome5{styleName}";
+                    var localPath = $@"{enumBasePath}\{enumName}.cs";
+
+                    Console.WriteLine("\nGenerating {0}.cs...", enumName);
+                    var icons = metadata.Where(x => x.Styles.Contains(item) && !x.Private);
+                    WriteEnumToFile(localPath, enumName, icons);
+                }
+
+                CopyFontFiles(archive, enumBasePath);
             }
-
-            AskForFontAwesomeDirectory:
-            Console.WriteLine("\nEnter the Font Awesome directory:");
-            string fontAwesomePath = @"C:\Dev\fontawesome-free-5.3.1-web"; //Console.ReadLine();
-            if (!Directory.Exists(fontAwesomePath))
-            {
-                Console.WriteLine("\nDirectory does not exist.");
-                goto AskForFontAwesomeDirectory;
-            }
-
-            string metadataPath = $@"{fontAwesomePath}\metadata\icons.json";
-            if (!File.Exists(metadataPath))
-            {
-                Console.WriteLine("\nDirectory does not contain a metadata directory with a icons.json file.");
-                goto AskForFontAwesomeDirectory;
-            }
-
-            Console.WriteLine("\nLoading metadata from: {0}", metadataPath);
-            IList<MetadataIcon> metadata = LoadMetadata(metadataPath);
-
-            // Get a list all the different styles
-            IEnumerable<string> styles = metadata.SelectMany(x => x.Styles).Distinct();
-
-            foreach (string item in styles)
-            {
-                string styleName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item);
-                string enumName = $"FontAwesome5{styleName}";
-                string localPath = $@"{enumBasePath}\{enumName}.cs";
-
-                Console.WriteLine("\nGenerating {0}.cs...", enumName);
-                IEnumerable<MetadataIcon> icons = metadata.Where(x => x.Styles.Contains(item) && !x.Private);
-                WriteEnumToFile(localPath, enumName, icons);
-            }
-
-            CopyFontFiles(fontAwesomePath, enumBasePath);
 
             Console.WriteLine("\nDone generating Enums. Press enter to exit.");
             Console.ReadLine();
         }
 
-        private static void CopyFontFiles(string fontAwesomePath, string enumBasePath)
+        private static void CopyFontFiles(ZipArchive archive, string enumBasePath)
         {
-            string source = $@"{fontAwesomePath}\webfonts\";
-            string destination = $@"{enumBasePath}\Fonts\";
+            var destination = $@"{enumBasePath}\Fonts\";
 
-            string[] filesToCopy = Directory.GetFiles(source, "*.ttf");
-            foreach (string fileToCopy in filesToCopy)
+            var rootEntry = archive.Entries[0];
+            var fontEntries = archive.Entries.Where(x => x.FullName.StartsWith(rootEntry + "web-fonts-with-css/webfonts") && x.FullName.EndsWith(".ttf"));
+
+            foreach (var fileToCopy in fontEntries)
             {
-                Console.WriteLine("\nCopying {0} to {1}...", fileToCopy, destination);
-                File.Copy(fileToCopy, destination + Path.GetFileName(fileToCopy), true);
+                Console.WriteLine("\nCopying {0} to {1}...", fileToCopy.Name, destination);
+                fileToCopy.ExtractToFile(destination + Path.GetFileName(fileToCopy.Name), true);
             }
         }
 
-        private static IList<MetadataIcon> LoadMetadata(string path)
+        private static IList<MetadataIcon> LoadMetadata(Stream stream)
         {
-            using (StreamReader file = File.OpenText(path))
+            using (var file = new StreamReader(stream))
             {
-                JsonSerializer serializer = new JsonSerializer();
+                var serializer = new JsonSerializer();
                 serializer.Converters.Add(new FontAwesomeJsonConverter());
                 return (List<MetadataIcon>)serializer.Deserialize(file, typeof(List<MetadataIcon>));
             }
@@ -100,9 +84,9 @@ namespace Geta.Epi.FontThumbnail.EnumGenerator
 
         private static void WriteEnumToFile(string path, string enumName, IEnumerable<MetadataIcon> icons)
         {
-            string latestVersionChange = icons.SelectMany(x => x.Changes).Distinct().OrderBy(x => x).Last();
+            var latestVersionChange = icons.SelectMany(x => x.Changes).Distinct().OrderBy(x => x).Last();
 
-            using (StreamWriter writer = new StreamWriter(path))
+            using (var writer = new StreamWriter(path))
             {
                 writer.WriteLine("//------------------------------------------------------------------------------");
                 writer.WriteLine("// <auto-generated>");
@@ -123,7 +107,7 @@ namespace Geta.Epi.FontThumbnail.EnumGenerator
                 writer.WriteLine($"\tpublic enum {enumName}");
                 writer.WriteLine("\t{");
 
-                foreach (MetadataIcon icon in icons)
+                foreach (var icon in icons)
                 {
                     writer.WriteLine("\t\t/// <summary>");
                     writer.WriteLine($"\t\t/// {icon.Label.ToTitleCase()} ({icon.Name})");
@@ -132,7 +116,7 @@ namespace Geta.Epi.FontThumbnail.EnumGenerator
                     WriteChanges(writer, icon);
                     writer.WriteLine("\t\t/// </summary>");
 
-                    string name = GetEnumSafeName(icon);
+                    var name = GetEnumSafeName(icon);
                     writer.WriteLine($"\t\t{name} = 0x{icon.Unicode},\n");
                 }
 
@@ -158,13 +142,13 @@ namespace Geta.Epi.FontThumbnail.EnumGenerator
 
         private static void WriteChanges(StreamWriter writer, MetadataIcon icon)
         {
-            IOrderedEnumerable<string> changes = icon.Changes.Select(x => x.FormatSemver()).OrderBy(x => x);
+            var changes = icon.Changes.Select(x => x.FormatSemver()).OrderBy(x => x);
 
             writer.Write($"\t\t/// <para>Added in {changes.First()}");
             if (changes.Count() > 1)
             {
-                IEnumerable<string> otherChanges = changes.Skip(1);
-                string result = string.Join(", ", otherChanges.Take(otherChanges.Count() - 1)) + (otherChanges.Count() > 1 ? " and " : string.Empty) + otherChanges.LastOrDefault();
+                var otherChanges = changes.Skip(1);
+                var result = string.Join(", ", otherChanges.Take(otherChanges.Count() - 1)) + (otherChanges.Count() > 1 ? " and " : string.Empty) + otherChanges.LastOrDefault();
                 writer.Write($", updated in {result}");
             }
             writer.Write(".</para>\n");
@@ -172,7 +156,7 @@ namespace Geta.Epi.FontThumbnail.EnumGenerator
 
         private static string GetEnumSafeName(MetadataIcon icon)
         {
-            string name = icon.Name.Replace('-', ' ');
+            var name = icon.Name.Replace('-', ' ');
             name = name.ToTitleCase();
             name = name.Replace(" ", string.Empty);
             if (char.IsDigit(name[0]))
@@ -181,7 +165,7 @@ namespace Geta.Epi.FontThumbnail.EnumGenerator
             }
 
             // Verify reverse conversion
-            string reverse = name.ToDashCase().Replace("_", string.Empty);
+            var reverse = name.ToDashCase().Replace("_", string.Empty);
             if (!icon.Name.Equals(reverse))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
