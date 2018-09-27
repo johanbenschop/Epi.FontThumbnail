@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -176,6 +176,10 @@
     <EmbeddedResource Include="Fonts\fa-brands-400.ttf" />
     <EmbeddedResource Include="Fonts\fa-regular-400.ttf" />
     <EmbeddedResource Include="Fonts\fa-solid-900.ttf" />
+    <None Include="ClientResources\css\all.min.css" />
+    <None Include="ClientResources\webfonts\fa-brands-400.svg" />
+    <None Include="ClientResources\webfonts\fa-regular-400.svg" />
+    <None Include="ClientResources\webfonts\fa-solid-900.svg" />
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
@@ -185,10 +189,25 @@
     <EmbeddedResource Include="Fonts\fontawesome.ttf" />
     <None Include="app.config" />
     <None Include="module.config" />
+    <None Include="ClientResources\webfonts\fa-brands-400.eot" />
+    <None Include="ClientResources\webfonts\fa-brands-400.ttf" />
+    <None Include="ClientResources\webfonts\fa-brands-400.woff" />
+    <None Include="ClientResources\webfonts\fa-brands-400.woff2" />
+    <None Include="ClientResources\webfonts\fa-regular-400.eot" />
+    <None Include="ClientResources\webfonts\fa-regular-400.ttf" />
+    <None Include="ClientResources\webfonts\fa-regular-400.woff" />
+    <None Include="ClientResources\webfonts\fa-regular-400.woff2" />
+    <None Include="ClientResources\webfonts\fa-solid-900.eot" />
+    <None Include="ClientResources\webfonts\fa-solid-900.ttf" />
+    <None Include="ClientResources\webfonts\fa-solid-900.woff" />
+    <None Include="ClientResources\webfonts\fa-solid-900.woff2" />
+    <None Include="web.config.uninstall.xdt" />
+    <None Include="web.config.install.xdt" />
     <None Include="Web.Module.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animations.cs" />
+    <Compile Include="ClientResourceProvider.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\ThumbnailIconController.cs" />
     <Compile Include="DataAnnotations\ThumbnailIcon.cs" />
@@ -220,6 +239,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props'))" />
   </Target>
+  <Import Project="$(SolutionDir)build\BuildEpiModule.proj" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

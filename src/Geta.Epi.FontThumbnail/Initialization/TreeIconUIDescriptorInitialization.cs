@@ -13,15 +13,16 @@ namespace Geta.Epi.FontThumbnail.Initialization
 {
     [InitializableModule]
     [ModuleDependency(typeof(InitializableModule))]
-    public class TreeIconUIDescriptorInitialization : IInitializableModule
+    internal class TreeIconUIDescriptorInitialization : IInitializableModule
     {
         private static bool GloballyEnabled => "true".Equals(ConfigurationManager.AppSettings["FontThumbnail.EnableTreeIcons"], StringComparison.OrdinalIgnoreCase);
+        public static bool EnabledAndInUse;
 
         public void Initialize(InitializationEngine context)
         {
             var registry = context.Locate.Advanced.GetInstance<UIDescriptorRegistry>();
 
-            foreach (UIDescriptor descriptor in registry.UIDescriptors)
+            foreach (var descriptor in registry.UIDescriptors)
             {
                 var treeIconAttribute = descriptor.ForType.GetCustomAttribute<TreeIcon>(true);
                 var thumbnailIconAttribute = descriptor.ForType.GetCustomAttribute<ThumbnailIcon>(true);
@@ -31,6 +32,9 @@ namespace Geta.Epi.FontThumbnail.Initialization
                     if ((GloballyEnabled || treeIconAttribute?.Ignore != false) || treeIconAttribute?.Ignore != false)
                     {
                         descriptor.IconClass = BuildClassnames(thumbnailIconAttribute, treeIconAttribute);
+
+                        if (!EnabledAndInUse)
+                            EnabledAndInUse = true;
                     }
                 }
             }
@@ -38,12 +42,15 @@ namespace Geta.Epi.FontThumbnail.Initialization
 
         private static string BuildClassnames(ThumbnailIcon thumbnailIconAttribute, TreeIcon treeIconAttribute)
         {
-            var builder = new StringBuilder();
-            var icon = treeIconAttribute.Icon ?? thumbnailIconAttribute.Icon;
-            var rotate = thumbnailIconAttribute.Rotate;
-            var animation = treeIconAttribute.Animation;
+            var icon = treeIconAttribute?.Icon ?? thumbnailIconAttribute?.Icon;
+            if (icon == null)
+                return string.Empty;
 
-            string className = ToDashCase(icon.ToString()).Replace("_", string.Empty);
+            var builder = new StringBuilder();
+            var rotate = thumbnailIconAttribute?.Rotate;
+            var animation = treeIconAttribute?.Animation;
+
+            var className = ToDashCase(icon.ToString()).Replace("_", string.Empty);
             switch (icon)
             {
                 case FontAwesome fa:
