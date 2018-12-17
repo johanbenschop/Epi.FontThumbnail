@@ -9,6 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geta.Epi.FontThumbnail.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geta.Epi.FontThumbnail.EnumGenerator", "src\Geta.Epi.FontThumbnail.EnumGenerator\Geta.Epi.FontThumbnail.EnumGenerator.csproj", "{15B28C5F-0852-4772-832F-DB1B13B1828A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8168E993-7F47-44E0-87C6-004B4DF02FB4}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		build\BuildEpiModule.proj = build\BuildEpiModule.proj
+		build\MSBuild.Community.Tasks.targets = build\MSBuild.Community.Tasks.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

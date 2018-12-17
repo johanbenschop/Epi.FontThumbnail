@@ -10,7 +10,7 @@
 namespace Geta.Epi.FontThumbnail
 {
 	/// <summary>
-	/// Font Awesome. Version 5.3.0.
+	/// Font Awesome. Version 5.5.0.
 	/// </summary>
 	public enum FontAwesome5Regular
 	{
@@ -126,7 +126,7 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// Calendar Minus (calendar-minus)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Terms: delete, remove</para>
+		/// <para>Terms: delete, negative, remove</para>
 		/// <para>Added in 4.4.0, updated in 5.0.0.</para>
 		/// </summary>
 		CalendarMinus = 0xf272,
@@ -134,7 +134,7 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// Calendar Plus (calendar-plus)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Terms: add, create, new</para>
+		/// <para>Terms: add, create, new, positive</para>
 		/// <para>Added in 4.4.0, updated in 5.0.0.</para>
 		/// </summary>
 		CalendarPlus = 0xf271,
@@ -254,7 +254,7 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// Alternate Comment (comment-alt)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Terms: bubble, chat, commenting, commenting, conversation, feedback, message, note, notification, sms, speech, texting</para>
+		/// <para>Terms: bubble, chat, commenting, conversation, feedback, message, note, notification, sms, speech, texting</para>
 		/// <para>Added in 4.4.0, updated in 5.0.0.</para>
 		/// </summary>
 		CommentAlt = 0xf27a,
@@ -444,7 +444,7 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// Flag (flag)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Terms: notice, notification, notify, report</para>
+		/// <para>Terms: country, notice, notification, notify, pole, report, symbol</para>
 		/// <para>Added in 1.0.0, updated in 5.0.0.</para>
 		/// </summary>
 		Flag = 0xf024,
@@ -755,7 +755,7 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// Image (image)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Terms: album, photo, picture, picture</para>
+		/// <para>Terms: album, photo, picture</para>
 		/// <para>Added in 1.0.0, updated in 5.0.0.</para>
 		/// </summary>
 		Image = 0xf03e,
@@ -899,7 +899,7 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// Minus Square (minus-square)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Terms: collapse, delete, hide, hide, minify, remove, trash</para>
+		/// <para>Terms: collapse, delete, hide, minify, negative, remove, trash</para>
 		/// <para>Added in 3.1.0, updated in 5.0.0.</para>
 		/// </summary>
 		MinusSquare = 0xf146,
@@ -915,7 +915,7 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// Moon (moon)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Terms: contrast, darker, night</para>
+		/// <para>Terms: contrast, crescent, darker, lunar, night</para>
 		/// <para>Added in 3.2.0, updated in 5.0.0.</para>
 		/// </summary>
 		Moon = 0xf186,
@@ -969,7 +969,7 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// Plus Square (plus-square)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Terms: add, create, expand, new</para>
+		/// <para>Terms: add, create, expand, new, positive</para>
 		/// <para>Added in 3.0.0, updated in 5.0.0.</para>
 		/// </summary>
 		PlusSquare = 0xf0fe,
@@ -1032,7 +1032,7 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// Beaming Face With Smiling Eyes (smile-beam)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Terms: emoticon, face, happy</para>
+		/// <para>Terms: emoticon, face, happy, positive</para>
 		/// <para>Added in 5.1.0.</para>
 		/// </summary>
 		SmileBeam = 0xf5b8,
@@ -1048,7 +1048,8 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// Snowflake (snowflake)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Added in 4.7.0, updated in 5.0.0.</para>
+		/// <para>Terms: precipitation, seasonal, winter</para>
+		/// <para>Added in 4.7.0, updated in 5.0.0 and 5.5.0.</para>
 		/// </summary>
 		Snowflake = 0xf2dc,
 
@@ -1093,8 +1094,8 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// Sun (sun)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Terms: brighten, contrast, day, lighter, weather</para>
-		/// <para>Added in 3.2.0, updated in 5.0.0.</para>
+		/// <para>Terms: brighten, contrast, day, lighter, sol, solar, star, weather</para>
+		/// <para>Added in 3.2.0, updated in 5.0.0 and 5.5.0.</para>
 		/// </summary>
 		Sun = 0xf185,
 
@@ -1149,7 +1150,7 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// User (user)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Terms: account, avatar, head, man, person, profile</para>
+		/// <para>Terms: account, avatar, head, human, man, person, profile</para>
 		/// <para>Added in 1.0.0, updated in 5.0.0, 5.0.11 and 5.0.3.</para>
 		/// </summary>
 		User = 0xf007,
@@ -1157,7 +1158,7 @@ namespace Geta.Epi.FontThumbnail
 		/// <summary>
 		/// User Circle (user-circle)
 		/// <para>Styles: solid, regular</para>
-		/// <para>Terms: account, avatar, head, man, person, profile</para>
+		/// <para>Terms: account, avatar, head, human, man, person, profile</para>
 		/// <para>Added in 4.7.0, updated in 5.0.0, 5.0.11 and 5.0.3.</para>
 		/// </summary>
 		UserCircle = 0xf2bd,

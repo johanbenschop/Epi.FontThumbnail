@@ -11,5 +11,7 @@
         public static int DefaultFontSize = 40;
         public static int DefaultWidth = 120;
         public static int DefaultHeight = 90;
+
+        internal const string EnableTreeIcons = "FontThumbnail.EnableTreeIcons";
     }
 }

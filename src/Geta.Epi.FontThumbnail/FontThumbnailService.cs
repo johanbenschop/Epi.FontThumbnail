@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -92,8 +92,9 @@ namespace Geta.Epi.FontThumbnail
 
                 Rectangle displayRectangle = new Rectangle(new Point(0, 0), new Size(settings.Width, settings.Height));
                 string chr = char.ConvertFromUtf32(settings.Character);
+
                 g.DrawString(chr, font, new SolidBrush(fg), displayRectangle, format1);
-                
+
                 switch (settings.Rotate)
                 {
                     case Rotations.FlipHorizontal:
