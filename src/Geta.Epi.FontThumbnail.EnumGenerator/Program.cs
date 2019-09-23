@@ -52,19 +52,20 @@ namespace Geta.Epi.FontThumbnail.EnumGenerator
                     WriteEnumToFile(localPath, enumName, icons);
                 }
 
-                CopyFontFiles(archive, enumBasePath);
+                CopyFontFiles(archive, $@"{enumBasePath}\ClientResources\fa5\webfonts\", false);
+                CopyFontFiles(archive, $@"{sourcePath}\Geta.Epi.FontThumbnail.Tests\App_Data\fonts\", true);
             }
 
             Console.WriteLine("\nDone generating Enums. Press enter to exit.");
             Console.ReadLine();
         }
 
-        private static void CopyFontFiles(ZipArchive archive, string enumBasePath)
+        private static void CopyFontFiles(ZipArchive archive, string destination, bool ttfOnly)
         {
-            var destination = $@"{enumBasePath}\Fonts\";
-
             var rootEntry = archive.Entries[0];
-            var fontEntries = archive.Entries.Where(x => x.FullName.StartsWith(rootEntry + "webfonts") && x.FullName.EndsWith(".ttf"));
+            var fontEntries = ttfOnly
+                ? archive.Entries.Where(x => x.FullName.StartsWith(rootEntry + "webfonts") && x.FullName.EndsWith(".ttf"))
+                : archive.Entries.Where(x => x.FullName.StartsWith(rootEntry + "webfonts") && x.Name.Length > 3);
 
             foreach (var fileToCopy in fontEntries)
             {
@@ -85,7 +86,7 @@ namespace Geta.Epi.FontThumbnail.EnumGenerator
 
         private static void WriteEnumToFile(string path, string enumName, IEnumerable<MetadataIcon> icons)
         {
-            var latestVersionChange = icons.SelectMany(x => x.Changes).Distinct().OrderBy(x => x).Last();
+            var latestVersionChange = icons.SelectMany(x => x.Changes).Distinct().OrderBy(x => x, new VersionComparer()).Last();
 
             using (var writer = new StreamWriter(path))
             {
@@ -125,7 +126,7 @@ namespace Geta.Epi.FontThumbnail.EnumGenerator
             }
         }
 
-        private static void WriteStyles(StreamWriter writer, MetadataIcon icon)
+        private static void WriteStyles(TextWriter writer, MetadataIcon icon)
         {
             if (icon.Styles?.Count > 1)
             {
@@ -133,7 +134,7 @@ namespace Geta.Epi.FontThumbnail.EnumGenerator
             }
         }
 
-        private static void WriteSearchTerms(StreamWriter writer, MetadataIcon icon)
+        private static void WriteSearchTerms(TextWriter writer, MetadataIcon icon)
         {
             if (icon.Search?.Terms?.Count > 0)
             {
@@ -141,7 +142,7 @@ namespace Geta.Epi.FontThumbnail.EnumGenerator
             }
         }
 
-        private static void WriteChanges(StreamWriter writer, MetadataIcon icon)
+        private static void WriteChanges(TextWriter writer, MetadataIcon icon)
         {
             var changes = icon.Changes.Select(x => x.FormatSemver()).OrderBy(x => x);
 
